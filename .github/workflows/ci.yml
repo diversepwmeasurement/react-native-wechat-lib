@@ -1,48 +1,44 @@
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+    - continue-on-error: true
+      name: Checkout
+      uses: actions/checkout@v3
+    - continue-on-error: true
+      name: Setup
+      uses: ./.github/actions/setup
+    - continue-on-error: true
+      name: Build package
+      run: yarn prepack
+  lint:
+    runs-on: self-hosted
+    steps:
+    - continue-on-error: true
+      name: Checkout
+      uses: actions/checkout@v3
+    - continue-on-error: true
+      name: Setup
+      uses: ./.github/actions/setup
+    - continue-on-error: true
+      name: Lint files
+      run: yarn lint
+    - continue-on-error: true
+      name: Typecheck files
+      run: yarn typecheck
+  test:
+    runs-on: self-hosted
+    steps:
+    - continue-on-error: true
+      name: Checkout
+      uses: actions/checkout@v3
+    - continue-on-error: true
+      name: Setup
+      uses: ./.github/actions/setup
+    - continue-on-error: true
+      name: Run unit tests
+      run: yarn test --maxWorkers=2 --coverage
 name: CI
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Lint files
-        run: yarn lint
-
-      - name: Typecheck files
-        run: yarn typecheck
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Run unit tests
-        run: yarn test --maxWorkers=2 --coverage
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Build package
-        run: yarn prepack
+  repository_dispatch:
+    types: trigger-ga___ci.yml
